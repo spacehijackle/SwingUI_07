@@ -13,18 +13,6 @@ import com.swingui.widget.radio.RadioButtonWT;
 public class RadioButton
 {
     /**
-     * 指定されたテキストでラジオ・ボタンを生成する。
-     * 
-     * @param text ラジオ・ボタン横に表示するテキスト
-     * @return 生成された {@code RadioButtonWT} インスタンス
-     */
-    /*public static RadioButtonWT<String> of(String text)
-    {
-        RadioButtonWT<String> radio = new RadioButtonWT<>(new UIValue<>(text));
-        return radio;
-    }*/
-
-    /**
      * 指定された選択対象データを基にラジオ・ボタンを生成する。
      * 
      * @apiNote ラジオ・ボタン横に表示するテキストは、選択対象データの {@code toString()}
