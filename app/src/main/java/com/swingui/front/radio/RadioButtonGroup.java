@@ -1,6 +1,5 @@
 package com.swingui.front.radio;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class RadioButtonGroup
      * @param target 検索対象のコンポーネント
      * @return 検出されたラジオ・ボタンのリスト
      */
-    @Deprecated
+    /*@Deprecated
     @SuppressWarnings("unchecked")
     private static <E> List<RadioButtonWT<E>> searchRadioButtons(JComponent target)
     {
@@ -106,5 +105,5 @@ public class RadioButtonGroup
         }
 
         return radios;
-    }
+    }*/
 }
