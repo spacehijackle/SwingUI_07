@@ -63,7 +63,7 @@ public class RadioButton
      * @param item 選択対象データ
      * @return 生成された {@code RadioButtonWT} インスタンス
      */
-    public static <T> RadioButtonWT<T> watch(UIValue<T> item)
+    public static <T> RadioButtonWT<T> of(UIValue<T> item)
     {
         RadioButtonWT<T> radio = new RadioButtonWT<>(item);
         return radio;
@@ -79,7 +79,7 @@ public class RadioButton
      * @param labeling ラベル生成関数
      * @return 生成された {@code RadioButtonWT} インスタンス
      */
-    public static <T> RadioButtonWT<T> watch(UIValue<T> item, Function<T, String> labeling)
+    public static <T> RadioButtonWT<T> of(UIValue<T> item, Function<T, String> labeling)
     {
         RadioButtonWT<T> radio = new RadioButtonWT<>(item, labeling);
         return radio;
