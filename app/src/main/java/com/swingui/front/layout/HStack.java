@@ -2,6 +2,9 @@ package com.swingui.front.layout;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -64,6 +67,91 @@ public class HStack
     public static PanelWT of(UIAlignmentY alignmentY, Spacing spacing, JComponent... components)
     {
         return init(alignmentY, spacing, components);
+    }
+
+    /**
+     * 指定されたリストを基にしてコンポーネントを生成し、横に並べる。
+     * 
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(UIAlignmentY.Center, Spacing.defaults(), list, generator);
+    }
+
+    /**
+     * 垂直方向の位置指定をし、指定されたリストを基にしてコンポーネントを生成し、横に並べる。
+     * 
+     * @param alignmentY 垂直方向の位置指定
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        UIAlignmentY alignmentY, List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(alignmentY, Spacing.defaults(), list, generator);
+    }
+
+    /**
+     * 指定されたリストを基にしてコンポーネントを生成し、指定された間隔で横に並べる。
+     * 
+     * @param spacing コンポーネント間の間隔
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        Spacing spacing, List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(UIAlignmentY.Center, spacing, list, generator);
+    }
+
+    /**
+     * 垂直方向の位置指定をし、指定されたリストを基にしてコンポーネントを生成し、指定された間隔で横に並べる。
+     * 
+     * @param alignmentY 垂直方向の位置指定
+     * @param spacing コンポーネント間の間隔
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        UIAlignmentY alignmentY, Spacing spacing, List<E> list, Function<E, T> generator
+    )
+    {
+        List<T> components = new ArrayList<>();
+        for(E item : list)
+        {
+            T child = generator.apply(item);
+            if(child != null)
+            {
+                components.add(child);
+            }
+        }
+        return of(alignmentY, spacing, components.toArray(new JComponent[components.size()]));
     }
 
     /**

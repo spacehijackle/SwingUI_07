@@ -43,6 +43,12 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 	// 選択値の変更通知
 	private Consumer<T> onCheckChanged;
 
+	/**
+	 * 指定されたラジオ・ボタンを基にラジオ・ボタングループを生成する。
+	 * 
+	 * @param selected 選択対象保持データ
+	 * @param radios グループ化対象のラジオ・ボタン一覧
+	 */
     public RadioButtonGroupWT(UIValue<T> selected, List<RadioButtonWT<T>> radios)
     {
         super();
@@ -77,6 +83,9 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 		onCheckChanged = null;
     }
 
+	/**
+	 * ラジオ・ボタンの選択変更を監視する。
+	 */
 	private void monitorRadioState()
 	{
         // ラジオボタンの選択変更を監視するリスナー
@@ -188,6 +197,16 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 	 */
 	private void syncSelectedValueToGroup()
 	{
+		syncSelectedValueToGroup(false);
+	}
+
+	/**
+	 * 選択状態に合わせたグループ配下のラジオボタン選択の同期
+	 * 
+	 * @param isSlient 変更イベントの発火を抑制するか否かのフラグ
+	 */
+	private void syncSelectedValueToGroup(boolean isSlient)
+	{
 		// 選択値の更新（選択値の変更がトリガーの場合）
 		// ※更新された選択値に対し、ラジオボタンを同期させる。
 		for(RadioButtonWT<T> radio : radios)
@@ -195,7 +214,7 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 			if(Objects.equals(selected.get(), radio.getItem().get()) && !radio.isSelected())
 			{
 				radio.setSelected(true);
-				if(onCheckChanged != null)
+				if(onCheckChanged != null && !isSlient)
 				{
 					onCheckChanged.accept(selected.get());
 				}
@@ -207,6 +226,9 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 		}
 	}
 
+	/**
+	 * 管理下の個々のラジオ・ボタンに設定する選択変更リスナー
+	 */
     private class RadioButtonChangeListener implements ChangeListener
     {
 	    // 選択変更の取消確認中フラグ
@@ -253,7 +275,7 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 			if(cancelOrNot.get())
 			{
 				// 取消の場合、選択値は更新せず、更にラジオボタンの選択を元に戻す
-				syncSelectedValueToGroup();
+				syncSelectedValueToGroup(true);
 			}
 
 			isAskingToChange = false;  // 変更取り消し確認終了

@@ -1,6 +1,10 @@
 package swingui_07.guitar;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
 import com.swingui.constant.UIAlignmentX;
 import com.swingui.front.Frame;
@@ -18,15 +22,21 @@ import com.swingui.value.size.UILength.Height;
  * 
  * @author t.yoshida
  */
-public class GuitarCommentary
+public class GuitarCommentary2
 {
-    // ギターのタイプの選択値
+    // ギターのタイプ一覧
+    private final List<Guitar> guitars = Arrays.asList
+    (
+        Guitar.ELECTRIC, Guitar.ACOUSTIC, Guitar.CLASSICAL, Guitar.AIR
+    );
+
+    // ギターのタイプ選択値
     private final UIValue<Guitar> selected = UIValue.of(Guitar.ELECTRIC);
 
     // ギタータイプの解説テキストのフォントカラー更新クラス
     private CommentColorUpdater fgUpdater = new CommentColorUpdater();
 
-    public GuitarCommentary()
+    public GuitarCommentary2()
     {
         fgUpdater.update();
         build();
@@ -36,56 +46,30 @@ public class GuitarCommentary
     {
         Frame.of
         (
-            "ギターの種類",
+            "ギターの種類 - VStack#forEach(...)",
 
             RadioButtonGroup.of
             (
                 selected,
-                VStack.of
+                VStack.forEach
                 (
-                    UIAlignmentX.Leading,  // 左寄せ
+                    UIAlignmentX.Leading,
+                    guitars,     // ギターのタイプ一覧
+                    (guitar) ->  // ギターのタイプ毎のラジオ・ボタン選択とその説明テキストを作成
+                    {
+                        return VStack.of
+                        (
+                            UIAlignmentX.Leading,
 
-                    ///
-                    /// エレキ・ギター
-                    /// 
-                    RadioButton.of(Guitar.ELECTRIC),
+                            RadioButton.of(guitar),
 
-                    Text.of(Guitar.ELECTRIC.comment)
-                        .foreground(fgUpdater.electric)
-                        .padding(Horizontal.of(16)),
+                            Text.of(guitar.comment)
+                                .foreground(fgUpdater.colorMap.get(guitar))
+                                .padding(Horizontal.of(16)),
 
-                    Spacer.of(Height.of(8)),
-
-                    ///
-                    /// アコースティック・ギター
-                    /// 
-                    RadioButton.of(Guitar.ACOUSTIC),
-
-                    Text.of(Guitar.ACOUSTIC.comment)
-                        .foreground(fgUpdater.acoustic)
-                        .padding(Horizontal.of(16)),
-
-                    Spacer.of(Height.of(8)),
-
-                    ///
-                    /// クラシック・ギター
-                    /// 
-                    RadioButton.of(Guitar.CLASSICAL),
-
-                    Text.of(Guitar.CLASSICAL.comment)
-                        .foreground(fgUpdater.classical)
-                        .padding(Horizontal.of(16)),
-
-                    Spacer.of(Height.of(8)),
-
-                    ///
-                    /// エア・ギター
-                    /// 
-                    RadioButton.of(Guitar.AIR),
-
-                    Text.of(Guitar.AIR.comment)
-                        .foreground(fgUpdater.airy)
-                        .padding(Horizontal.of(16))
+                            Spacer.of(Height.of(8))
+                        );
+                    }
                 )
             )
             .padding(24)
@@ -104,10 +88,10 @@ public class GuitarCommentary
     class CommentColorUpdater
     {
         // 選択状態のフォントカラー
-        private final Color SELECTED = Color.darkGray;
+        final Color SELECTED = Color.darkGray;
 
         // 非選択状態のフォントカラー
-        private final Color UNSELECTED = Color.gray;
+        final Color UNSELECTED = Color.gray;
 
         //
         // ギタータイプ別の解説テキストのフォントカラー
@@ -116,6 +100,18 @@ public class GuitarCommentary
         private UIValue<Color> acoustic = UIValue.of(UNSELECTED);
         private UIValue<Color> classical = UIValue.of(UNSELECTED);
         private UIValue<Color> airy = UIValue.of(UNSELECTED);
+
+        // ギタータイプと解説テキストのフォントカラーの紐づけを保持するマップ
+        final Map<Guitar, UIValue<Color>> colorMap = new HashMap<>();
+
+        CommentColorUpdater()
+        {
+            // ギタータイプと解説テキストのフォントカラーの紐づけ
+            colorMap.put(Guitar.ELECTRIC, electric);
+            colorMap.put(Guitar.ACOUSTIC, acoustic);
+            colorMap.put(Guitar.CLASSICAL, classical);
+            colorMap.put(Guitar.AIR, airy);
+        }
 
         /**
          * 各ギタータイプ解説のフォントカラーを選択状態に応じて更新する。

@@ -2,6 +2,9 @@ package com.swingui.front.layout;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -67,9 +70,95 @@ public class VStack
     }
 
     /**
+     * 指定されたリストを基にしてコンポーネントを生成し、縦に並べる。
+     * 
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(UIAlignmentX.Center, Spacing.defaults(), list, generator);
+    }
+
+    /**
+     * 水平方向の位置指定をし、指定されたリストを基にしてコンポーネントを生成し、縦に並べる。
+     * 
+     * @param alignmentX 水平方向の位置指定
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        UIAlignmentX alignmentX, List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(alignmentX, Spacing.defaults(), list, generator);
+    }
+
+    /**
+     * 指定されたリストを基にしてコンポーネントを生成し、指定された間隔で縦に並べる。
+     * 
+     * @param spacing コンポーネント間の間隔
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        Spacing spacing, List<E> list, Function<E, T> generator
+    )
+    {
+        return forEach(UIAlignmentX.Center, spacing, list, generator);
+    }
+
+    /**
+     * 水平方向の位置指定をし、指定されたリストを基にしてコンポーネントを生成し、指定された間隔で縦に並べる。
+     * 
+     * @param alignmentX 水平方向の位置指定
+     * @param spacing コンポーネント間の間隔
+     * @param list コンポーネントを生成する基になるリスト
+     * @param generator リストの要素からコンポーネントを生成する関数
+     * @return {@link PanelWT}
+     * 
+     * @param <E> リストの要素型
+     * @param <T> コンポーネント型
+     */
+    public static <E, T extends JComponent> PanelWT forEach
+    (
+        UIAlignmentX alignmentX, Spacing spacing, List<E> list, Function<E, T> generator
+    )
+    {
+        List<T> components = new ArrayList<>();
+        for(E item : list)
+        {
+            T child = generator.apply(item);
+            if(child != null)
+            {
+                components.add(child);
+            }
+        }
+        return of(alignmentX, spacing, components.toArray(new JComponent[components.size()]));
+    }
+
+    /**
      * 初期化処理
      * 
      * @param alignmentX 水平方向の位置指定
+     * @param spacing コンポーネント間の間隔
      * @param components 並べるコンポーネント群
      * @return {@link PanelWT}
      */

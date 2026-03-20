@@ -26,6 +26,9 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     // 選択対象保持データ
     private UIValue<T> item;
 
+    // ラベル生成関数
+    private Function<T, String> labeling;
+
     // 活性/非活性状態
     private UIValue<Boolean> isEnabled = new UIValue<>(true);
 
@@ -45,9 +48,10 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      */
     public RadioButtonWT(UIValue<T> item)
     {
-        super(item.get().toString());
+        super(item != null ? item.get().toString() : "");
 
         this.item = item;
+        this.labeling = (t) -> t != null ? t.toString() : "";
 
         installFocusListener();
     }
@@ -56,13 +60,14 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      * 指定された選択対象とラベルでラジオボタンを生成する。
      * 
      * @param item 選択対象データ
-     * @param label ラベル生成関数
+     * @param labeling ラベル生成関数
      */
-    public RadioButtonWT(UIValue<T> item, Function<T, String> label)
+    public RadioButtonWT(UIValue<T> item, Function<T, String> labeling)
     {
-        super(label.apply(item.get()));
+        super(item != null ? labeling.apply(item.get()) : "");
 
         this.item = item;
+        this.labeling = labeling;
 
         installFocusListener();
     }
@@ -71,6 +76,7 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     public void dispose()
     {
         item = UIValue.of(null);
+        labeling = null;
         isEnabled = UIValue.of(null);
         hasFocus = UIValue.of(null);
         fgColor = UIValue.of(null);
@@ -103,6 +109,9 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     @Override
     public void refreshWT()
     {
+        // ラベルの更新
+        setText(item != null ? labeling.apply(item.get()) : "");
+
         // 活性/非活性設定
         setEnabled(isEnabled.get());
 

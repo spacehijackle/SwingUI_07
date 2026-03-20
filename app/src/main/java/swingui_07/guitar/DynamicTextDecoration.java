@@ -3,12 +3,16 @@ package swingui_07.guitar;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JCheckBox;
+
 import com.swingui.constant.HorizontalAlignment;
 import com.swingui.front.Frame;
 import com.swingui.front.button.Button;
 import com.swingui.front.layout.HStack;
 import com.swingui.front.layout.Spacer;
 import com.swingui.front.layout.VStack;
+import com.swingui.front.radio.RadioButton;
+import com.swingui.front.radio.RadioButtonGroup;
 import com.swingui.front.text.Text;
 import com.swingui.value.UIValue;
 import com.swingui.value.size.UILength.Height;
@@ -23,11 +27,9 @@ import com.swingui.widget.text.renderer.LineAttr.LineStyle;
  */
 public class DynamicTextDecoration
 {
-    // 線スタイル
-    private UIValue<LineStyle> lineStyle = UIValue.of(LineStyle.Solid);
+    private final UIValue<Boolean> isHuman = new UIValue<>(false);
 
-    // 線カラー
-    private UIValue<LineColor> lineColor = UIValue.of(LineColor.of(Color.BLACK));
+    private final UIValue<String> selectedGender = UIValue.of("男性");
 
     public void test()
     {
@@ -37,61 +39,17 @@ public class DynamicTextDecoration
 
             VStack.of
             (
-                Text.of("Underline Label Test", HorizontalAlignment.Center)
-                    .font(new Font("Dialog", Font.PLAIN, 18))
-                    .frame(Width.Infinite, Height.of(80))
-                    .padding(8)
-                    .background(Color.white)
-                    //.underline(lineStyle),  // 線スタイルのみ動的変更
-                    //.underline(lineColor),  // 線カラーのみ動的変更
-                    .underline(lineStyle, lineColor),  // 線スタイル・線カラー両方を動的変更
+                new JCheckBox("人間である"),
 
-                Spacer.of(Height.of(8)),
-
-                //
-                // 線スタイル設定ボタン
-                // 
-                Text.of("Line Style:")
-                    .foreground(Color.darkGray)
-                    .frame(Width.Infinite),
-
-                HStack.of
+                RadioButtonGroup.of
                 (
-                    Button.of("Solid")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineStyle.set(LineStyle.Solid)),
-
-                    Button.of("Bold")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineStyle.set(LineStyle.Bold)),
-
-                    Button.of("Double")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineStyle.set(LineStyle.Double))
-                ),
-
-                Spacer.of(Height.of(8)),
-
-                //
-                // 線カラー設定ボタン
-                // 
-                Text.of("Line Color:")
-                    .foreground(Color.darkGray)
-                    .frame(Width.Infinite),
-
-                HStack.of
-                (
-                    Button.of("Black")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineColor.set(LineColor.of(Color.black))),
-
-                    Button.of("Red")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineColor.set(LineColor.of(Color.red))),
-
-                    Button.of("Blue")
-                        .frame(Width.of(80))
-                        .onClicked(self -> lineColor.set(LineColor.of(Color.blue)))
+                    selectedGender,
+                    HStack.of
+                    (
+                        RadioButton.of("♂ 男性"),
+                        RadioButton.of("♀ 女性"),
+                        RadioButton.of("その他")
+                    )
                 )
             )
             .padding(24)
