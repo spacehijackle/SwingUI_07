@@ -121,4 +121,17 @@ public class WidgetHelper
         }
         return arryas;
     }
+
+    /**
+     * 指定されたコンポーネントが空かどうかを返す。
+     * 
+     * @param target 対象コンポーネント
+     * @return 空の場合はtrue、それ以外はfalse
+     */
+    public static boolean isEmpty(JComponent target)
+    {
+        if(target == null) return true;
+
+        return (target.getMaximumSize().width == 0) && (target.getMaximumSize().height == 0);
+    }
 }

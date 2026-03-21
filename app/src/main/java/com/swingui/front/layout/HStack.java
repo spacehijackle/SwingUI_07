@@ -3,6 +3,7 @@ package com.swingui.front.layout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -13,6 +14,7 @@ import javax.swing.JComponent;
 import com.swingui.constant.UIAlignmentY;
 import com.swingui.value.Spacing;
 import com.swingui.widget.PanelWT;
+import com.swingui.widget.util.WidgetHelper;
 
 /**
  * コンポーネントを横に並べるレイアウト提供クラス
@@ -170,6 +172,9 @@ public class HStack
          * これを追加するとウィンドウを拡大した際、子コンポーネントのサイズが拡大に合わせて
          * いっぱいに広がらないため（JList, ListBoxWT等）、使用しない方針である。
          */
+
+        // 空コンポーネントはコンポーネント配列から除外
+        components = Arrays.stream(components).filter(c -> !WidgetHelper.isEmpty(c)).toArray(JComponent[]::new);
 
         PanelWT panel = new PanelWT();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));

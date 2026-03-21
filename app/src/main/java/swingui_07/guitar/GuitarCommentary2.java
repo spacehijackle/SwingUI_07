@@ -69,8 +69,7 @@ public class GuitarCommentary2
                                 .padding(Horizontal.of(16)),
 
                             // 末尾以外、余白を追加
-                            (idx != (guitars.size() - 1) ? Spacer.of(Height.of(8))
-                                                         : Spacer.of(Height.of(0)))
+                            (idx != (guitars.size() - 1) ? Spacer.of(Height.of(8)) : Spacer.empty())
                         );
                     }
                 )

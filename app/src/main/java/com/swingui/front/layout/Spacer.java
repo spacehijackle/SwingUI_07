@@ -50,6 +50,16 @@ public class Spacer
     }
 
     /**
+     * 空のスペース領域（幅・高さともにゼロ）を確保する。
+     * 
+     * @return {@code PanelWT}
+     */
+    public static PanelWT empty()
+    {
+        return fixed(WxHSize.zero());
+    }
+
+    /**
      * 指定したサイズで柔軟なスペース領域を確保する。
      * 
      * @param size サイズ
