@@ -2,7 +2,7 @@ package swingui_07;
 
 import javax.swing.SwingUtilities;
 
-import swingui_07.guitar.DynamicTextDecoration;
+import swingui_07.gender.GenderChoice;
 import swingui_07.guitar.GuitarCommentary;
 import swingui_07.guitar.GuitarCommentary2;
 
@@ -12,6 +12,6 @@ public class Startup
     {
         SwingUtilities.invokeLater(() -> new GuitarCommentary());
         SwingUtilities.invokeLater(() -> new GuitarCommentary2());
-        SwingUtilities.invokeLater(() -> new DynamicTextDecoration().test());
+        SwingUtilities.invokeLater(() -> new GenderChoice());
     }
 }
