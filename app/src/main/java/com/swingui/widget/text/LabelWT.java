@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 
 import com.swingui.event.WTClickListener;
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.Widget;
@@ -51,14 +52,20 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
     // フォント
     private UIValue<Font> font = new UIValue<>(getFont());
 
-    // クリック・リスナー
+    // クリック・イベント通知
     private WTClickListener<LabelWT<T>> onClicked;
 
-    // 表示テキスト変更リスナー
+    // 表示テキスト変更通知
     private BiConsumer<LabelWT<T>, T> onValueChanged;
 
     // レンダラー配列
     private List<LabelRenderer> renderers = new ArrayList<>();
+
+    // 表示テキスト変更リスナー
+    private final ValueChangeListener txtChgListener;
+
+    // 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(LabelWT.this);
 
     /**
      * 指定されたテキストでラベルを生成する。
@@ -70,12 +77,14 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
         super(text.get().toString());
 
         this.text = text;
-        this.text.addValueChangeListener(() ->
+        this.txtChgListener = () ->
         {
-            WidgetHelper.invokeToRefresh(LabelWT.this);
+            WidgetHelper.invokeToRefresh(LabelWT.this);  // ウィジェット更新
 
+            // 表示テキスト変更通知
             if(onValueChanged != null) onValueChanged.accept(LabelWT.this, text.get());
-        });
+        };
+        this.text.addValueChangeListener(txtChgListener);
 
         installClickListener();
         installFocusListener();
@@ -84,6 +93,13 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
     @Override
     public void dispose()
     {
+        text.removeValueChangeListener(txtChgListener);
+        isEnabled.removeValueChangeListener(valChgListener);
+        hasFocus.removeValueChangeListener(valChgListener);
+        fgColor.removeValueChangeListener(valChgListener);
+        bgColor.removeValueChangeListener(valChgListener);
+        font.removeValueChangeListener(valChgListener);
+
         text = UIValue.of(null);
         isEnabled = UIValue.of(null);
         hasFocus = UIValue.of(null);
@@ -178,8 +194,10 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
     @Override
     public LabelWT<T> enabled(UIValue<Boolean> isEnabled)
     {
+        this.isEnabled.removeValueChangeListener(valChgListener);
+
         this.isEnabled = isEnabled;
-        this.isEnabled.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(LabelWT.this));
+        this.isEnabled.addValueChangeListener(valChgListener);
         setEnabled(isEnabled.get());
         return this;
     }
@@ -193,8 +211,10 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
     @Override
     public LabelWT<T> focus(UIValue<Boolean> hasFocus)
     {
+        this.hasFocus.removeValueChangeListener(valChgListener);
+
         this.hasFocus = hasFocus;
-        this.hasFocus.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(LabelWT.this));
+        this.hasFocus.addValueChangeListener(valChgListener);
         if(hasFocus.get()) requestFocusInWindow();
         return this;
     }
@@ -204,8 +224,10 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
     {
         if(!isOpaque()) setOpaque(true);  // 背景色を表示するために不透明化
 
+        this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(LabelWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
@@ -236,8 +258,10 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
      */
     public LabelWT<T> foreground(UIValue<Color> fgColor)
     {
+        this.fgColor.removeValueChangeListener(valChgListener);
+
         this.fgColor = fgColor;
-        this.fgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(LabelWT.this));
+        this.fgColor.addValueChangeListener(valChgListener);
         setForeground(fgColor.get());
         return this;
     }
@@ -261,8 +285,10 @@ public class LabelWT<T> extends JLabel implements Widget<LabelWT<T>>
      */
     public LabelWT<T> font(UIValue<Font> font)
     {
+        this.font.removeValueChangeListener(valChgListener);
+
         this.font = font;
-        this.font.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(LabelWT.this));
+        this.font.addValueChangeListener(valChgListener);
         setFont(font.get());
         return this;
     }

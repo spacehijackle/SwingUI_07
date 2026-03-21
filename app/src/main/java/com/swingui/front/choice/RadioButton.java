@@ -1,9 +1,9 @@
-package com.swingui.front.radio;
+package com.swingui.front.choice;
 
 import java.util.function.Function;
 
 import com.swingui.value.UIValue;
-import com.swingui.widget.radio.RadioButtonWT;
+import com.swingui.widget.choice.RadioButtonWT;
 
 /**
  * ラジオボタン部品提供クラス
@@ -34,6 +34,7 @@ public class RadioButton
      * 
      * @param <T> 選択対象データの型
      * @param item 選択対象データ
+     * @param labeling ラベル生成関数
      * @return 生成された {@code RadioButtonWT} インスタンス
      */
     public static <T> RadioButtonWT<T> of(T item, Function<T, String> labeling)

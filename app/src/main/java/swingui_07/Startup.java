@@ -12,6 +12,6 @@ public class Startup
     {
         SwingUtilities.invokeLater(() -> new GuitarCommentary());
         SwingUtilities.invokeLater(() -> new GuitarCommentary2());
-        //SwingUtilities.invokeLater(() -> new DynamicTextDecoration().test());
+        SwingUtilities.invokeLater(() -> new DynamicTextDecoration().test());
     }
 }

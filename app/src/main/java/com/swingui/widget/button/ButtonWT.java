@@ -11,6 +11,7 @@ import javax.swing.JButton;
 
 import com.swingui.event.WTClickListener;
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.Widget;
@@ -35,8 +36,11 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
     // フォント
     private UIValue<Font> font = new UIValue<>(getFont());
 
-    // クリック・リスナー
+    // クリック・イベント通知
     private WTClickListener<ButtonWT> onClickListener;
+
+	// 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(ButtonWT.this);
 
     /**
      * 指定されたテキストでボタンを生成する。
@@ -65,6 +69,11 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
     @Override
     public void dispose()
     {
+        isEnabled.removeValueChangeListener(valChgListener);
+        hasFocus.removeValueChangeListener(valChgListener);
+        bgColor.removeValueChangeListener(valChgListener);
+        font.removeValueChangeListener(valChgListener);
+
         isEnabled = UIValue.of(null);
         hasFocus = UIValue.of(null);
         bgColor = UIValue.of(null);
@@ -133,8 +142,10 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
     @Override
     public ButtonWT enabled(UIValue<Boolean> isEnabled)
     {
+        this.isEnabled.removeValueChangeListener(valChgListener);
+
         this.isEnabled = isEnabled;
-        this.isEnabled.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(ButtonWT.this));
+        this.isEnabled.addValueChangeListener(valChgListener);
         setEnabled(isEnabled.get());
         return this;
     }
@@ -148,8 +159,10 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
     @Override
     public ButtonWT focus(UIValue<Boolean> hasFocus)
     {
+        this.hasFocus.removeValueChangeListener(valChgListener);
+
         this.hasFocus = hasFocus;
-        this.hasFocus.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(ButtonWT.this));
+        this.hasFocus.addValueChangeListener(valChgListener);
         if(hasFocus.get()) requestFocusInWindow();
         return this;
     }
@@ -157,8 +170,10 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
     @Override
     public ButtonWT background(UIValue<Color> bgColor)
     {
+        this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(ButtonWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
@@ -189,8 +204,10 @@ public class ButtonWT extends JButton implements Widget<ButtonWT>
      */
     public ButtonWT font(UIValue<Font> font)
     {
+        this.font.removeValueChangeListener(valChgListener);
+
         this.font = font;
-        this.font.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(ButtonWT.this));
+        this.font.addValueChangeListener(valChgListener);
         setFont(font.get());
         return this;
     }

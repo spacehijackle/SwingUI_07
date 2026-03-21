@@ -1,4 +1,4 @@
-package com.swingui.front.radio;
+package com.swingui.front.choice;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import javax.swing.JComponent;
 
 import com.swingui.value.UIValue;
 import com.swingui.widget.Widget;
-import com.swingui.widget.radio.RadioButtonGroupWT;
-import com.swingui.widget.radio.RadioButtonWT;
+import com.swingui.widget.choice.RadioButtonGroupWT;
+import com.swingui.widget.choice.RadioButtonWT;
 
 /**
  * ラジオ・ボタンをグループ化し、排他選択を可能にするラジオ・ボタングループ提供クラス

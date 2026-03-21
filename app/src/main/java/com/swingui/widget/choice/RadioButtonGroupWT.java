@@ -1,4 +1,4 @@
-package com.swingui.widget.radio;
+package com.swingui.widget.choice;
 
 import java.awt.Color;
 import java.util.List;
@@ -13,6 +13,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.Widget;
@@ -43,6 +44,9 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 	// 選択値の変更通知
 	private Consumer<T> onCheckChanged;
 
+    // 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(RadioButtonGroupWT.this);
+
 	/**
 	 * 指定されたラジオ・ボタンを基にラジオ・ボタングループを生成する。
 	 * 
@@ -54,10 +58,7 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
         super();
 
         this.selected = selected;
-		this.selected.addValueChangeListener
-		(
-			() -> WidgetHelper.invokeToRefresh(RadioButtonGroupWT.this)
-		);
+		this.selected.addValueChangeListener(valChgListener);
 
         this.radios = radios;
 
@@ -75,10 +76,14 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
     @Override
     public void dispose()
     {
+		isEnabled.removeValueChangeListener(valChgListener);
+		bgColor.removeValueChangeListener(valChgListener);
+		selected.removeValueChangeListener(valChgListener);
+
         isEnabled = UIValue.of(null);
 		bgColor = UIValue.of(null);
 		selected = UIValue.of(null);
-		radios = null;
+		radios.clear();
         onCheckChanging = null;
 		onCheckChanged = null;
     }
@@ -117,11 +122,10 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
     @Override
     public RadioButtonGroupWT<T> enabled(UIValue<Boolean> isEnabled)
     {
+		this.isEnabled.removeValueChangeListener(valChgListener);
+
         this.isEnabled = isEnabled;
-        this.isEnabled.addValueChangeListener
-		(
-			() -> WidgetHelper.invokeToRefresh(RadioButtonGroupWT.this)
-		);
+        this.isEnabled.addValueChangeListener(valChgListener);
         syncEnabledSettingsInGroup();
         return this;
     }
@@ -143,8 +147,10 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
     {
         if(!isOpaque()) setOpaque(true);  // 背景色を表示するために不透明化
 
+		this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(RadioButtonGroupWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
@@ -214,6 +220,7 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 			if(Objects.equals(selected.get(), radio.getItem().get()) && !radio.isSelected())
 			{
 				radio.setSelected(true);
+				radio.requestFocusInWindow();
 				if(onCheckChanged != null && !isSlient)
 				{
 					onCheckChanged.accept(selected.get());

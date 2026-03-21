@@ -1,4 +1,4 @@
-package com.swingui.widget.radio;
+package com.swingui.widget.choice;
 
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -9,6 +9,7 @@ import java.util.function.Function;
 import javax.swing.JRadioButton;
 
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.Widget;
@@ -41,6 +42,9 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     // 背景色
     private UIValue<Color> bgColor = new UIValue<>(getBackground());
 
+    // 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(RadioButtonWT.this);
+
     /**
      * 指定された選択対象でラジオボタンを生成する。
      * 
@@ -48,12 +52,7 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      */
     public RadioButtonWT(UIValue<T> item)
     {
-        super(item != null ? item.get().toString() : "");
-
-        this.item = item;
-        this.labeling = (t) -> t != null ? t.toString() : "";
-
-        installFocusListener();
+        this(item, (t) -> t != null ? t.toString() : "");
     }
 
     /**
@@ -67,6 +66,7 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
         super(item != null ? labeling.apply(item.get()) : "");
 
         this.item = item;
+        this.item.addValueChangeListener(valChgListener);
         this.labeling = labeling;
 
         installFocusListener();
@@ -75,6 +75,12 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     @Override
     public void dispose()
     {
+        item.removeValueChangeListener(valChgListener);
+        isEnabled.removeValueChangeListener(valChgListener);
+        hasFocus.removeValueChangeListener(valChgListener);
+        fgColor.removeValueChangeListener(valChgListener);
+        bgColor.removeValueChangeListener(valChgListener);
+
         item = UIValue.of(null);
         labeling = null;
         isEnabled = UIValue.of(null);
@@ -132,8 +138,10 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     @Override
     public RadioButtonWT<T> enabled(UIValue<Boolean> isEnabled)
     {
+        this.isEnabled.removeValueChangeListener(valChgListener);
+
         this.isEnabled = isEnabled;
-        this.isEnabled.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(RadioButtonWT.this));
+        this.isEnabled.addValueChangeListener(valChgListener);
         setEnabled(isEnabled.get());
         return this;
     }
@@ -147,8 +155,10 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     @Override
     public RadioButtonWT<T> focus(UIValue<Boolean> hasFocus)
     {
+        this.hasFocus.removeValueChangeListener(valChgListener);
+
         this.hasFocus = hasFocus;
-        this.hasFocus.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(RadioButtonWT.this));
+        this.hasFocus.addValueChangeListener(valChgListener);
         if(hasFocus.get()) requestFocusInWindow();
         return this;
     }
@@ -156,8 +166,10 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
     @Override
     public RadioButtonWT<T> background(UIValue<Color> bgColor)
     {
+        this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(RadioButtonWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
@@ -177,8 +189,10 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      */
     public RadioButtonWT<T> foreground(UIValue<Color> fgColor)
     {
+        this.fgColor.removeValueChangeListener(valChgListener);
+
         this.fgColor = fgColor;
-        this.fgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(RadioButtonWT.this));
+        this.fgColor.addValueChangeListener(valChgListener);
         setForeground(fgColor.get());
         return this;
     }

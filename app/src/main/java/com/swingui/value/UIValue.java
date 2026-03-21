@@ -71,6 +71,16 @@ public class UIValue<T>
     }
 
     /**
+     * 値変更通知リスナーを削除する。
+     * 
+     * @param listener 値変更通知リスナー
+     */
+    public void removeValueChangeListener(ValueChangeListener listener)
+    {
+        this.listeners.remove(listener);
+    }
+
+    /**
      * 保持する値を返す。
      * 
      * @return 保持する値

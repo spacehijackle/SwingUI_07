@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import javax.swing.JPanel;
 
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.util.WidgetHelper;
@@ -25,6 +26,9 @@ public class PanelWT extends JPanel implements Widget<PanelWT>
 
     // 背景色
     private UIValue<Color> bgColor = new UIValue<>(getBackground());
+
+    // 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(PanelWT.this);
 
     /**
      * {@code PanelWT} を生成する。
@@ -51,6 +55,9 @@ public class PanelWT extends JPanel implements Widget<PanelWT>
     @Override
     public void dispose()
     {
+        hasFocus.removeValueChangeListener(valChgListener);
+        bgColor.removeValueChangeListener(valChgListener);
+
         hasFocus = UIValue.of(null);
         bgColor = UIValue.of(null);
     }
@@ -107,8 +114,10 @@ public class PanelWT extends JPanel implements Widget<PanelWT>
     @Override
     public PanelWT focus(UIValue<Boolean> hasFocus)
     {
+        this.hasFocus.removeValueChangeListener(valChgListener);
+
         this.hasFocus = hasFocus;
-        this.hasFocus.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(PanelWT.this));
+        this.hasFocus.addValueChangeListener(valChgListener);
         if(hasFocus.get()) requestFocusInWindow();
         return this;
     }
@@ -116,8 +125,10 @@ public class PanelWT extends JPanel implements Widget<PanelWT>
     @Override
     public PanelWT background(UIValue<Color> bgColor)
     {
+        this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(PanelWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
