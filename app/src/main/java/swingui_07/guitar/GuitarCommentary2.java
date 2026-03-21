@@ -54,9 +54,10 @@ public class GuitarCommentary2
                 VStack.forEach
                 (
                     UIAlignmentX.Leading,
-                    guitars,     // ギターのタイプ一覧
-                    (guitar) ->  // ギターのタイプ毎のラジオ・ボタン選択とその説明テキストを作成
+                    guitars,  // ギターのタイプ一覧
+                    (idx, guitar) ->
                     {
+                        // ギターのタイプ毎のラジオ・ボタン選択とその説明テキストを追加
                         return VStack.of
                         (
                             UIAlignmentX.Leading,
@@ -67,7 +68,9 @@ public class GuitarCommentary2
                                 .foreground(fgUpdater.colorMap.get(guitar))
                                 .padding(Horizontal.of(16)),
 
-                            Spacer.of(Height.of(8))
+                            // 末尾以外、余白を追加
+                            (idx != (guitars.size() - 1) ? Spacer.of(Height.of(8))
+                                                         : Spacer.of(Height.of(0)))
                         );
                     }
                 )

@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -81,7 +81,7 @@ public class HStack
      */
     public static <E, T extends JComponent> PanelWT forEach
     (
-        List<E> list, Function<E, T> generator
+        List<E> list, BiFunction<Integer, E, T> generator
     )
     {
         return forEach(UIAlignmentY.Center, Spacing.defaults(), list, generator);
@@ -100,7 +100,7 @@ public class HStack
      */
     public static <E, T extends JComponent> PanelWT forEach
     (
-        UIAlignmentY alignmentY, List<E> list, Function<E, T> generator
+        UIAlignmentY alignmentY, List<E> list, BiFunction<Integer, E, T> generator
     )
     {
         return forEach(alignmentY, Spacing.defaults(), list, generator);
@@ -119,7 +119,7 @@ public class HStack
      */
     public static <E, T extends JComponent> PanelWT forEach
     (
-        Spacing spacing, List<E> list, Function<E, T> generator
+        Spacing spacing, List<E> list, BiFunction<Integer, E, T> generator
     )
     {
         return forEach(UIAlignmentY.Center, spacing, list, generator);
@@ -139,13 +139,13 @@ public class HStack
      */
     public static <E, T extends JComponent> PanelWT forEach
     (
-        UIAlignmentY alignmentY, Spacing spacing, List<E> list, Function<E, T> generator
+        UIAlignmentY alignmentY, Spacing spacing, List<E> list, BiFunction<Integer, E, T> generator
     )
     {
         List<T> components = new ArrayList<>();
-        for(E item : list)
+        for(int i=0; i<list.size(); i++)
         {
-            T child = generator.apply(item);
+            T child = generator.apply(i, list.get(i));
             if(child != null)
             {
                 components.add(child);

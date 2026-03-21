@@ -1,6 +1,7 @@
 package com.swingui.widget.choice;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,7 +56,8 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
 	 */
     public RadioButtonGroupWT(UIValue<T> selected, List<RadioButtonWT<T>> radios)
     {
-        super();
+		// このパネル（コンテナ）上に乗せるコンポーネントが既に余白を持っているはずなので、ここは余白ゼロで設定
+        super(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         this.selected = selected;
 		this.selected.addValueChangeListener(valChgListener);
