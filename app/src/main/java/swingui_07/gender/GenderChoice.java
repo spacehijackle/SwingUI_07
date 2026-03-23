@@ -35,8 +35,7 @@ public class GenderChoice
     private final UIValue<Boolean> isGenderEnabled = new UIValue<>(false);
 
     // 性別選択の選択値（ラジオ・ボタン）
-    //private final UIValue<String> gender = UIValue.of(null);
-    private final UIValue<String> gender = UIValue.of("その他");
+    private final UIValue<Gender> gender = UIValue.of(Gender.Other);
 
     public GenderChoice()
     {
@@ -47,7 +46,7 @@ public class GenderChoice
     {
         Frame.of
         (
-            "性別選択サンプル",
+            "性別選択",
 
             VStack.of
             (

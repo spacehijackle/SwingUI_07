@@ -116,6 +116,16 @@ public class RadioButtonGroupWT<T> extends JPanel implements Widget<RadioButtonG
     }
 
     @Override
+    public java.awt.Dimension getMaximumSize()
+    {
+		// BoxLayout における JPanel#getMaximumSize() がデフォルトで非常に大きい値を返すため、
+		// これが原因で当ウィジェットが親コンテナ（VStack等）に対していっぱいに引き伸ばされる。
+		// 親コンテナで左寄せ等の位置指定をしても、いっぱいに引き伸ばされた状態では、その位置指定が効かなくなる。
+		// そのため、ここでは getPreferredSize() を上限とすることで、引き伸ばされないようにする。
+        return getPreferredSize();
+    }
+
+    @Override
     public RadioButtonGroupWT<T> padding(UIGap... gaps)
     {
 		return WidgetHelper.padding(this, gaps);
