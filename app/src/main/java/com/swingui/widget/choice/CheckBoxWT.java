@@ -9,6 +9,7 @@ import java.util.function.Function;
 import javax.swing.JCheckBox;
 
 import com.swingui.value.UIValue;
+import com.swingui.value.UIValue.ValueChangeListener;
 import com.swingui.value.gap.UIGap;
 import com.swingui.value.size.UILength;
 import com.swingui.widget.Widget;
@@ -44,6 +45,9 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
     // チェック状態変更通知
     private Consumer<Boolean> onCheckChanged;
 
+    // 対象値変更リスナー（ウィジェット更新の呼出）
+    private final ValueChangeListener valChgListener = () -> WidgetHelper.invokeToRefresh(CheckBoxWT.this);
+
     /**
      * 指定された選択状態と選択対象でチェックボックスを生成する。
      * 
@@ -67,10 +71,10 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
         super(item != null ? labeling.apply(item.get()) : "", isChecked.get());
 
         this.isChecked = isChecked;
-        this.isChecked.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(CheckBoxWT.this));
+        this.isChecked.addValueChangeListener(valChgListener);
 
         this.item = item;
-        this.item.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(CheckBoxWT.this));
+        this.item.addValueChangeListener(valChgListener);
         this.labeling = labeling;
 
         installFocusListener();
@@ -80,6 +84,12 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
     @Override
     public void dispose()
     {
+        item.removeValueChangeListener(valChgListener);
+        isEnabled.removeValueChangeListener(valChgListener);
+        isChecked.removeValueChangeListener(valChgListener);
+        hasFocus.removeValueChangeListener(valChgListener);
+        bgColor.removeValueChangeListener(valChgListener);
+
         item = UIValue.of(null);
         labeling = null;
         isEnabled = UIValue.of(null);
@@ -150,8 +160,10 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
     @Override
     public CheckBoxWT<T> enabled(UIValue<Boolean> isEnabled)
     {
+        this.isEnabled.removeValueChangeListener(valChgListener);
+
         this.isEnabled = isEnabled;
-        this.isEnabled.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(CheckBoxWT.this));
+        this.isEnabled.addValueChangeListener(valChgListener);
         setEnabled(isEnabled.get());
         return this;
     }
@@ -165,8 +177,10 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
     @Override
     public CheckBoxWT<T> focus(UIValue<Boolean> hasFocus)
     {
+        this.hasFocus.removeValueChangeListener(valChgListener);
+
         this.hasFocus = hasFocus;
-        this.hasFocus.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(CheckBoxWT.this));
+        this.hasFocus.addValueChangeListener(valChgListener);
         if(hasFocus.get()) requestFocusInWindow();
         return this;
     }
@@ -174,8 +188,10 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
     @Override
     public CheckBoxWT<T> background(UIValue<Color> bgColor)
     {
+        this.bgColor.removeValueChangeListener(valChgListener);
+
         this.bgColor = bgColor;
-        this.bgColor.addValueChangeListener(() -> WidgetHelper.invokeToRefresh(CheckBoxWT.this));
+        this.bgColor.addValueChangeListener(valChgListener);
         setBackground(bgColor.get());
         return this;
     }
