@@ -41,7 +41,7 @@ public class Survey
     private final UIValue<Boolean> isPeopleWatchingEnabled = new UIValue<>(true);
 
     // 年齢の選択値（ラジオボタン）
-    private final UIValue<String> age = UIValue.of(null);
+    private final UIValue<String> selectedAge = UIValue.of(null);
 
     public Survey()
     {
@@ -87,7 +87,7 @@ public class Survey
 
                     RadioButtonGroup.of
                     (
-                        age,
+                        selectedAge,
                         VStack.of
                         (
                             UIAlignmentX.Leading,
@@ -159,9 +159,9 @@ public class Survey
         }
 
         // 年齢の選択がない場合、適当に選択
-        if(age.get() == null)
+        if(selectedAge.get() == null)
         {
-            age.set("60代以上");
+            selectedAge.set("60代以上");
         }
     }
 }
