@@ -138,11 +138,11 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
         // ラベルの更新
         setText(item != null ? labeling.apply(item.get()) : "");
 
+        // 選択状態設定（活性/非活性設定より先に実施しないと反映しない）
+        setSelected(isChecked.get());
+
         // 活性/非活性設定
         setEnabled(isEnabled.get());
-
-        // 選択状態設定
-        setSelected(isChecked.get());
 
         // 背景色設定
         setBackground(bgColor.get());
