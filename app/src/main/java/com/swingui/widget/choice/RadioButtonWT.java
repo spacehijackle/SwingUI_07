@@ -52,7 +52,7 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      */
     public RadioButtonWT(UIValue<T> item)
     {
-        this(item, (t) -> t != null ? t.toString() : "");
+        this(item, (t) -> t.toString());
     }
 
     /**
@@ -63,7 +63,7 @@ public class RadioButtonWT<T> extends JRadioButton implements Widget<RadioButton
      */
     public RadioButtonWT(UIValue<T> item, Function<T, String> labeling)
     {
-        super(item != null ? labeling.apply(item.get()) : "");
+        super(labeling.apply(item.get()));
 
         this.item = item;
         this.item.addValueChangeListener(valChgListener);

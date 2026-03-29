@@ -56,7 +56,7 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
      */
     public CheckBoxWT(UIValue<Boolean> isChecked, UIValue<T> item)
     {
-        this(isChecked, item, (t) -> t != null ? t.toString() : "");
+        this(isChecked, item, (t) -> t.toString());
     }
 
     /**
@@ -68,7 +68,7 @@ public class CheckBoxWT<T> extends JCheckBox implements Widget<CheckBoxWT<T>>
      */
     public CheckBoxWT(UIValue<Boolean> isChecked, UIValue<T> item, Function<T, String> labeling)
     {
-        super(item != null ? labeling.apply(item.get()) : "", isChecked.get());
+        super(labeling.apply(item.get()), isChecked.get());
 
         this.isChecked = isChecked;
         this.isChecked.addValueChangeListener(valChgListener);
