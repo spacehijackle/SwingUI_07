@@ -62,7 +62,7 @@ public class GuitarCommentary2
                         (
                             UIAlignmentX.Leading,
 
-                            RadioButton.of(guitar),
+                            RadioButton.of(guitar, (g) -> String.format("%d. %s", (idx + 1), g)),
 
                             Text.of(guitar.comment)
                                 .foreground(fgUpdater.colorMap.get(guitar))
